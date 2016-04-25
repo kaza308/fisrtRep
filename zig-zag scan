@@ -1,0 +1,92 @@
+/*****zigzag scan********/
+//the progaram used to scan the vedio 4*4 macroblock DCT transfer coefficient in a zig-zag way
+
+#include <stdio.h>
+#include <iostream>
+#include <stdlib.h>
+#include <math.h>
+#define _USE_MATH_DEFINES
+#define N 4
+using namespace std;
+int main()
+	{
+		enum Dir{right,downleft,down,upright};
+		Dir f;
+        int a[N][N];
+        int b[N*N];
+        int i,j,k;
+        for(i=0;i<N;i++){
+        	for(j=0;j<N;j++){
+             a[i][j]=i*N+j+1;
+        	}
+        }
+        for(i=0;i<N;i++){
+        	for(j=0;j<N;j++){
+             cout<<a[i][j]<<" ";
+        	}
+        	cout<<endl;
+        }
+
+       i=0,j=0,k=0;
+     while(k<N*N)
+     {
+		if((i==0&&(j%2==0)&&(j<N-1))||(i==N-1&&(i+j)%2!=0))    //箭头指向右方的情况
+		{   
+			b[k]=a[i][j];
+			f=right;
+		}
+		else if((i==0&&(j%2!=0))||(j==N-1&&(i+j)%2!=0))           //箭头指向左下的情况
+		{       
+			b[k]=a[i][j];
+			f=downleft;
+		}
+		else if((i%2!=0&&j==0)||(j==N-1&&(i+j)%2==0))            //箭头指向下方的情况
+		{                                                         
+			b[k]=a[i][j];
+			f=down;
+		}
+		else if((j==0&&i%2==0)||(i==N-1&&(i+j)%2==0))            //箭头指向右上的情况
+		{          
+			b[k]=a[i][j];
+			f=upright;
+		}
+		else if((i*j!=0)&&(i!=N-1)&&(j!=N-1)){     //不在边缘的情况下判断箭头的指向，行列下标和为奇数时，指向右下，为偶数时，指向左上
+			if((i+j)%2!=0){
+				b[k]=a[i][j];
+				f=downleft;
+			}
+			else
+			{
+				b[k]=a[i][j];
+				f=upright;
+			}
+		}
+		
+		switch(f){
+			case 0:
+			      j++;
+			      k++;
+			      break;
+			case 1: 
+			      i++;
+			      j--;
+			      k++;
+			      break;
+			case 2:
+			      i++;
+			      k++;
+			      break;
+			case 3:
+			      i--;
+			      j++;
+			      k++;
+			      break;
+
+			default: return 0;
+			
+		}
+	 }
+	 for(i=0;i<N*N;i++){
+	 	cout<<b[i]<<" ";
+	 }
+}
